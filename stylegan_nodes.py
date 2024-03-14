@@ -1,44 +1,27 @@
 from __future__ import annotations
 from typing import Union, List
 import os
-import glob
 from pathlib import Path
 import numpy as np
-# import torch
-# import torch.nn as nn
 
-# from comfy_extras.chainner_models import model_loading
-# from comfy import model_management
-# import comfy.utils
+import torch
+import torch_utils
+import dnnlib
+import pickle
+
+import comfy.utils
+from comfy import model_management
 from comfy.model_management import get_torch_device
+
 import folder_paths
 folder_paths.folder_names_and_paths["stylegan"] = ([os.path.join(folder_paths.models_dir, "stylegan")], [".pkl"])
 
-from pathlib import Path
-import sys
-
-current_path = Path(__file__).parent
-tu_path = current_path / 'torch_utils'
-dnnlib_path = current_path / 'dnnlib'
-sys.path.append(tu_path)
-sys.path.append(dnnlib_path)
-print(sys.path)
-
-import pickle
-import torch
-# import torch.nn as nn
-import torch_utils
-import dnnlib
 
 class StyleGANModelLoader:
     # def __init__(self):
 
     @classmethod
     def model_list(cls):
-        # model_dir = Path(__file__).parent / "models"
-        # print(model_dir)
-        # files = glob.glob(str(model_dir / "*.pkl"))
-        # return [os.path.basename(file) for file in sorted(files, key=lambda file: (os.stat(file).st_mtime, file), reverse=True)]
         return folder_paths.get_filename_list("stylegan")
 
     @classmethod
@@ -52,7 +35,7 @@ class StyleGANModelLoader:
     
     def load_model(self, model_name):
         model_path = folder_paths.get_full_path("stylegan", model_name)
-        # sd = comfy.utils.load_torch_file(model_path, safe_load=True)
+        # sd = comfy.utils.load_torch_file(model_path, safe_load=True) # TODO
 
         with open(model_path, 'rb') as f:
             G = pickle.load(f)['G_ema']
